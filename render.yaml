@@ -1,12 +1,29 @@
+# render.yaml - Dynamic WSGI support
 services:
   - type: web
-    name: marks-calculator
+    name: marks-project
     env: python
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "gunicorn marks_calculator_project.wsgi --log-file -"
-    plan: free
+    buildCommand: |
+      pip install -r requirements.txt
+      python manage.py collectstatic --noinput
+      python manage.py migrate --noinput
+    # No startCommand needed, Procfile will be used
     envVars:
-      - key: DJANGO_SETTINGS_MODULE
-        value: marks_calculator_project.settings
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value: "*"
       - key: PYTHON_VERSION
         value: 3.11
+      - key: DATABASE_URL
+        fromDatabase:
+          name: marks-db
+          property: connectionString
+      - key: DJANGO_WSGI_MODULE
+        value: marks_calculator.wsgi:application
+
+databases:
+  - name: marks-db
+    plan: free
