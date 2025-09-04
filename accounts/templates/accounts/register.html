@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+  body {
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    min-height: 100vh;
+  }
+  .glass-card {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    color: #fff;
+  }
+  .glass-card h2 {
+    color: #fff !important;
+  }
+  .form-control {
+    background: rgba(255,255,255,0.8) !important;
+    border: none;
+    border-radius: 8px;
+    margin-bottom: 12px;
+  }
+  label {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 500;
+    color: #f1f1f1;
+  }
+  ul, .helptext, .errorlist {
+    display: none !important; /* hide verification & error messages */
+  }
+  .credit {
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: #f1f1f1;
+    text-align: center;
+    font-style: italic;
+  }
+</style>
+
+<div class="d-flex justify-content-center align-items-center vh-100">
+  <div class="glass-card shadow-lg p-4 animate__animated animate__fadeInDown" style="min-width:360px;">
+    <h2 class="text-center mb-4">📝 Register</h2>
+    <form method="post" class="animate__animated animate__fadeInUp">
+      {% csrf_token %}
+      {% for field in form %}
+        <div class="mb-3">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+        </div>
+      {% endfor %}
+      <button type="submit" 
+              class="btn btn-primary w-100 animate__animated animate__pulse animate__infinite">
+        ✨ Register
+      </button>
+    </form>
+    <div class="credit">
+      This project is made by <b>Ananya Das Diya</b> & <b>Swagato Roy Pran</b>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

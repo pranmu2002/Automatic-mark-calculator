@@ -1,0 +1,6 @@
+
+body { background-color: #f8f9fa; }
+.bg-gradient { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+.navbar-brand { font-weight: 700; }
+.btn-animated { transition: transform .15s ease-in-out; }
+.btn-animated:hover { transform: scale(1.05); }

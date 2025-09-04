@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<style>
+  body {
+    background: linear-gradient(135deg, #1abc9c, #3498db);
+    min-height: 100vh;
+  }
+  .glass-card {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    color: #fff;
+  }
+  .glass-card h5 {
+    color: #fff !important;
+  }
+  .mark-input {
+    background: rgba(255, 255, 255, 0.8);
+    border: none;
+    border-radius: 8px;
+    text-align: center;
+  }
+  .table-hover tbody tr:hover {
+    background-color: rgba(52, 152, 219, 0.15);
+    transition: 0.3s;
+  }
+  .overall {
+    font-weight: bold;
+    font-size: 1rem;
+  }
+</style>
+
+<div class="container mt-5 animate__animated animate__fadeIn">
+  <h2 class="text-center mb-4 text-light">📊 Marks Dashboard</h2>
+
+  <!-- Forms for adding student and fields -->
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <div class="glass-card shadow p-3">
+        <h5>➕ Add Student</h5>
+        <form method="post" class="animate__animated animate__fadeInLeft">
+          {% csrf_token %}
+          {{ student_form.as_p }}
+          <button type="submit" name="add_student" class="btn btn-success btn-sm">
+            ➕ Add Student
+          </button>
+        </form>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="glass-card shadow p-3">
+        <h5>➕ Add Field</h5>
+        <form method="post" class="animate__animated animate__fadeInRight">
+          {% csrf_token %}
+          {{ field_form.as_p }}
+          <button type="submit" name="add_field" class="btn btn-info btn-sm">
+            ➕ Add Field
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Marks Table -->
+  <form method="post">
+    {% csrf_token %}
+    <div class="glass-card shadow-lg p-4 animate__animated animate__zoomIn">
+      <table class="table table-hover table-bordered text-center align-middle text-light">
+        <thead class="table-dark">
+          <tr>
+            <th>Student</th>
+            {% for f in fields %}
+              <th>{{ f.name }}</th>
+            {% endfor %}
+            <th>Overall</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for data in students_data %}
+          <tr class="student-row">
+            <td><b>{{ data.student.name }}</b></td>
+            {% for m in data.marks %}
+              <td>
+                <input type="number" 
+                       name="mark_{{ data.student.id }}_{{ m.field.id }}" 
+                       value="{{ m.score }}" 
+                       class="form-control text-center mark-input" 
+                       min="0">
+              </td>
+            {% endfor %}
+            <td>
+              <span class="badge bg-primary overall fs-6 px-3 py-2">
+                {{ data.overall }}
+              </span>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <div class="text-end">
+        <button type="submit" name="save_marks" class="btn btn-primary animate__animated animate__pulse animate__infinite">
+          💾 Save Marks
+        </button>
+      </div>
+    </div>
+  </form>
+
+  <!-- Summary -->
+  <div class="mt-4 text-center animate__animated animate__fadeInUp text-light">
+    <h5>
+      Class Average: <span class="fw-bold text-warning">{{ avg_score }}</span>
+    </h5>
+    <a href="{% url 'export_excel' %}" class="btn btn-outline-light btn-sm me-2">
+      ⬇ Export Excel
+    </a>
+    <a href="{% url 'export_pdf' %}" class="btn btn-outline-light btn-sm">
+      ⬇ Export PDF
+    </a>
+  </div>
+</div>
+
+<!-- JavaScript for auto calculation & highlight -->
+<script>
+document.addEventListener("input", function(e) {
+  if (e.target.classList.contains("mark-input")) {
+    const row = e.target.closest("tr");
+    let total = 0;
+
+    row.querySelectorAll(".mark-input").forEach(input => {
+      total += parseFloat(input.value) || 0;
+    });
+
+    const overallBadge = row.querySelector(".overall");
+    overallBadge.textContent = total;
+
+    // Highlight row if marks updated
+    row.classList.add("table-success", "animate__animated", "animate__flash");
+    setTimeout(() => {
+      row.classList.remove("animate__animated", "animate__flash");
+    }, 1000);
+  }
+});
+</script>
+{% endblock %}
+
