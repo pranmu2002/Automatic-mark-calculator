@@ -1,24 +1,12 @@
-# render.yaml - Ready for deployment
 services:
   - type: web
-    name: marks-project
+    name: marks-calculator
     env: python
-    buildCommand: |
-      pip install -r requirements.txt
-      python manage.py collectstatic --noinput
-      python manage.py migrate --noinput
-    startCommand: "gunicorn marks_calculator.wsgi:application --preload"
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn marks_calculator_project.wsgi --log-file -"
+    plan: free
     envVars:
-      - key: DJANGO_SECRET_KEY
-        generateValue: true   # Render will auto-generate a secure key
+      - key: DJANGO_SETTINGS_MODULE
+        value: marks_calculator_project.settings
       - key: PYTHON_VERSION
         value: 3.11
-      - key: DATABASE_URL
-        fromDatabase:
-          name: marks-db
-          property: connectionString
-
-databases:
-  - name: marks-db
-    plan: free
-
