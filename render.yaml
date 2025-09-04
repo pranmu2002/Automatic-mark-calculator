@@ -9,7 +9,7 @@ services:
     startCommand: "gunicorn marks_calculator.wsgi:application --preload"
     envVars:
       - key: DJANGO_SECRET_KEY
-        generateValue: true   # Render auto-generates a secure key
+        generateValue: true
       - key: PYTHON_VERSION
         value: 3.11
       - key: DATABASE_URL
