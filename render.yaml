@@ -1,12 +1,11 @@
-# render.yaml - Django deployment without extra environment variable
 services:
   - type: web
     name: marks-project
     env: python
     buildCommand: |
       pip install -r requirements.txt
-      python manage.py collectstatic --noinput
       python manage.py migrate --noinput
+      python manage.py collectstatic --noinput
     startCommand: "gunicorn marks_calculator.wsgi:application --preload"
     envVars:
       - key: DJANGO_SECRET_KEY
@@ -25,4 +24,3 @@ services:
 databases:
   - name: marks-db
     plan: free
-
