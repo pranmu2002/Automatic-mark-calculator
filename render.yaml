@@ -1,3 +1,4 @@
+# render.yaml - Ready for deployment
 services:
   - type: web
     name: marks-project
@@ -9,7 +10,7 @@ services:
     startCommand: "gunicorn marks_calculator.wsgi:application --preload"
     envVars:
       - key: DJANGO_SECRET_KEY
-        generateValue: true
+        generateValue: true   # Render will auto-generate a secure key
       - key: PYTHON_VERSION
         value: 3.11
       - key: DATABASE_URL
@@ -20,3 +21,4 @@ services:
 databases:
   - name: marks-db
     plan: free
+
