@@ -1,1 +1,1 @@
-web: gunicorn marks_calculator_project.wsgi --log-file -
+web: gunicorn marks_calculator.wsgi:application --preload
